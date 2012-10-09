@@ -38,3 +38,14 @@ $(LIBNAME): $(ARCHIVE)
 	$(LD) $(LD_FLAGS) --whole-archive $< --no-whole-archive -o $@ 
 
 
+.c.o: $(SRC)
+	$(CC) $(CC_FLAGS) -o $@ -c $<
+
+clean:
+	[ -f $(LIBNAME) ] && $(RM) $(LIBNAME)|| [ 1 ]
+	[ -f $(ARCHIVE) ] && $(RM) $(ARCHIVE)|| [ 1 ]
+	[ -f $(OBJ) ] && $(RM) $(OBJ) || [ 1 ]
+	cd tests && make clean
+
+check: $(LIBNAME)
+	cd tests && make && make check
