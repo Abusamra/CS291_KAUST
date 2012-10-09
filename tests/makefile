@@ -1,10 +1,9 @@
-
  # Unit-test Makefile
 #--------------------------------------------------------- Definitions
-TGT_NAME    =    prog
-TGT_SRC     =    prog.c
+TGT_NAME    =      prog
+TGT_SRC     =    ../src/prog.c
 
-OPT         =    -O3 -fprofile-arcs -ftest-coverage
+OPT         =    -O2 -fprofile-arcs -ftest-coverage
 ERR         =    -Wall
 INC_PATH    =    -I. -I.. -I../src -I.. -I../check-0.9.8/src
 LIB_PATH    =    -L..
@@ -24,12 +23,29 @@ CC_FLAGS    =     $(INC_PATH) $(OPT) $(ERR) -DUNIT_TEST
 LD_FLAGS    =    $(LIB_PATH)
 
 
+
+# Test 2 : Actual unit tests against source code
+# NOTE: this cannot link against the library as it incorporates the source code
+TEST2        =    test_$(TGT_NAME)
+TEST2_SRC    =     $(TEST2).c \
+                   $(TGT_SRC)
+TEST2_FLAGS  =    $(CC_FLAGS) $(LD_FLAGS)
+
+TEST2_LIBS   =    $(LIBS) 
+
+TESTS        =    $(TEST1) $(TEST2)
+
+# ...
+
+$(TEST2): $(TEST2_SRC)
+	$(CC) $(TEST2_FLAGS) -o $@ $^ $(TEST2_LIBS)
+
  # Test 1 : Simple test to ensure that linking against the library succeeds
 TEST1        =    test_link
 TEST1_SRC    =    test_link.c
 
-TEST1_FLAGS  =    $(CC_FLAGS)  $(LD_FLAGS)
-TEST1_LIBS   =   -Wl,--start-group $(LIBS) -l$(TGT_NAME) -Wl,--end-group
+TEST1_FLAGS  =    $(CC_FLAGS) $(LD_FLAGS)
+TEST1_LIBS   =     -Wl,--start-group $(LIBS) -l$(TGT_NAME) -Wl,--end-group
 
 TESTS        =    $(TEST1)
 
@@ -38,21 +54,6 @@ TESTS        =    $(TEST1)
 $(TEST1): $(TEST1_SRC)
 	$(CC) $(TEST1_FLAGS) -o $@ $^ $(TEST1_LIBS)
 
-
-
-# Test 2 : Actual unit tests against source code
-# NOTE: this cannot link against the library as it incorporates the source code
-TEST2        =    test_$(TGT_NAME)
-TEST2_SRC    =     test_prog.c \
-                  ../src/$(TGT_SRC)
-TEST2_FLAGS  =
-
-TESTS        =    $(TEST1) $(TEST2)
-
-# ...
-
-$(TEST2): $(TEST2_SRC)
-	$(CC) $(CC_FLAGS) $(LD_FLAGS) $(TEST2_FLAGS) -o $@ $^
 #---------------------------------------------------------- Targets
 all: $(TESTS)
 .PHONY: all clean check
@@ -64,7 +65,5 @@ clean:
 
 check:
 	@for t in $(TESTS); do                          \
-	LD_LIBRARY_PATH='$(LD_PATH)' ./$$t;     \
+		LD_LIBRARY_PATH='$(LD_PATH)' ./$$t;     \
 	done
-
-
