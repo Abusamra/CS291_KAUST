@@ -37,6 +37,22 @@ TESTS        =    $(TEST1)
 
 $(TEST1): $(TEST1_SRC)
 	$(CC) $(TEST1_FLAGS) -o $@ $^ $(TEST1_LIBS)
+
+ # Test 2 : Actual unit tests against source code
+# NOTE: this cannot link against the library as it incorporates the source code
+TEST2        =    test_$(TGT_NAME)
+TEST2_SRC    =     $(TEST2).c \
+                   $(TGT_SRC)
+TEST2_FLAGS  =    $(CC_FLAGS) $(LD_FLAGS)
+
+TEST2_LIBS   =    $(LIBS) 
+
+TESTS        =    $(TEST1) $(TEST2)
+
+# ...
+
+$(TEST2): $(TEST2_SRC)
+	 $(CC) $(TEST2_FLAGS) -o $@ $^ $(TEST2_LIBS)
 #---------------------------------------------------------- Targets
 all: $(TESTS)
 .PHONY: all clean check
