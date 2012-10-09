@@ -1,13 +1,12 @@
- # Library Makefile
-# -------------------------------------------------------------------
-NAME        =   prog
+  # -------------------------------------------------------------------
+NAME        =    prog
 LIBNAME     =    lib$(NAME).so
 ARCHIVE     =    lib$(NAME).a
 
 DEBUG       =    -DDEBUG -ggdb
 OPT         =    -O3
 ERR         =    -Wall
-INC_PATH    =    -I. -I.. -I../src -I.. -I../check-0.9.8/src
+INC_PATH    =    -I. 
 LIB_PATH    =   
 
 #----------------------------------------------------------------
@@ -22,7 +21,7 @@ CC_FLAGS    =     $(INC_PATH) $(DEBUG) $(OPT) $(ERR) -fPIC
 LD_FLAGS    =    $(LIB_PATH) $(LIBS) -shared -soname=$(LIBNAME)
            
 
-SRC         =    src/prog.c
+SRC         =     src/prog.c
 
 OBJ         =    src/prog.o
 
@@ -35,8 +34,7 @@ $(ARCHIVE): $(OBJ)
 	$(RANLIB) $(ARCHIVE)
 
 $(LIBNAME): $(ARCHIVE)
-	$(LD) $(LD_FLAGS) --whole-archive $< --no-whole-archive -o $@ 
-
+	$(LD) $(LD_FLAGS) --whole-archive $< --no-whole-archive -o $@
 
 .c.o: $(SRC)
 	$(CC) $(CC_FLAGS) -o $@ -c $<
@@ -49,3 +47,8 @@ clean:
 
 check: $(LIBNAME)
 	cd tests && make && make check
+
+profile:
+	$(CC) -pg -o profilation/profilationinfo src/prog.o ; . /profilationinfo; gprof profltargetinfo > profilation/profltargetinfo.dat ;cd profilation; gedit profltargetinfo.dat
+
+
