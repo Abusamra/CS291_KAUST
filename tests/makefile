@@ -42,7 +42,7 @@ $(TEST1): $(TEST1_SRC)
 
 # Test 2 : Actual unit tests against source code
 # NOTE: this cannot link against the library as it incorporates the source code
-#TEST2        =    test_$(TGT_NAME)
+TEST2        =    test_$(TGT_NAME)
 TEST2_SRC    =     test_prog.c \
                   ../src/$(TGT_SRC)
 TEST2_FLAGS  =
