@@ -1,3 +1,15 @@
+****the project with the following directory structure:***
+
+*.Folder
+    makefile
+    src
+      prog.c
+      prog.h
+    tests
+      test_linck.c
+      test_prog.c
+      makefile
+    check-0.9.8
 
 
 =======================================================================
